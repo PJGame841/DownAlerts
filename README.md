@@ -8,6 +8,25 @@ Just a simple system to ping an ip with port, if it doesn't respond -> send a me
 3. Set the environments variables
 4. Run `npm run start`
 
+## Docker installation
+
+Run
+
+```bash
+docker run -d \
+
+	--name=downalerts \
+
+	-e DISCORD_WEBHOOK="https://google.com" \
+
+	-e CHECK_ADDR=google.com \
+
+	-e CHECK_PORT=80 \
+
+	pjgame841/downalerts
+```
+
+
 ## Environments variables
 
 `DISCORD_WEBHOOK`: the webhook url to send the message -> Optional
