@@ -24,7 +24,7 @@ jobs:
       - name: Start
         env:
           DISCORD_WEBHOOK: "${{ secrets.DISCORD_WEBHOOK }}"
-        run: docker run -d -e DISCORD_WEBHOOK=$DISCORD_WEBHOOK --name=pj_downalerts-api pjgame841/downalerts-api
+        run: docker run -d -e DISCORD_WEBHOOK=$DISCORD_WEBHOOK -p 5000:5000 --name=pj_downalerts-api pjgame841/downalerts-api
 
   run-client:
     runs-on: self-hosted
@@ -42,4 +42,4 @@ jobs:
         continue-on-error: true
 
       - name: Start
-        run: docker run -d --name=pj_downalerts-web pjgame841/downalerts-web
+        run: docker run -d -p 3000:3000 --name=pj_downalerts-web pjgame841/downalerts-web
