@@ -3,7 +3,7 @@ FROM node:16-alpine
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
-RUN rm -rD client
+RUN rm -rd client
 COPY . .
 RUN npm install -y
 RUN npm install --dev
