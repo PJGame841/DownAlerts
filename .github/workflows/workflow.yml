@@ -6,23 +6,49 @@ on:
       - main
 
 jobs:
-  build:
+  run-client:
     runs-on: self-hosted
 
     steps:
       - uses: actions/checkout@v1
       - name: Docker Build
-        run: docker build -t pjgame841/downalerts .
+        run: docker build -t pjgame841/downalerts-web ./client
       - name: Login to DockerHub
         uses: docker/login-action@v1
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Docker push
-        run: docker push pjgame841/portfolio
+        run: docker push pjgame841/downalerts-web
 
       - name: Stop old containers
-        run: docker rm $(docker stop $(docker ps -a -q --filter name=pj_downalerts --format="{{.ID}}"))
+        run: docker rm $(docker stop $(docker ps -a -q --filter name=pj_downalerts-web --format="{{.ID}}"))
+        continue-on-error: true
+
+      - name: Remove old image
+        run: docker rmi -f $(docker images -f "dangling=true" -q)
+        continue-on-error: true
+
+      - name: Start
+        run: docker run -d --name=pj_downalerts-web pjgame841/downalerts-web
+
+  run-api:
+    runs-on: self-hosted
+
+    steps:
+      - uses: actions/checkout@v1
+      - name: Docker Build
+        run: docker build -t pjgame841/downalerts-api .
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Docker push
+        run: docker push pjgame841/downalerts-api
+
+      - name: Stop old containers
+        run: docker rm $(docker stop $(docker ps -a -q --filter name=pj_downalerts-api --format="{{.ID}}"))
         continue-on-error: true
 
       - name: Remove old image
@@ -32,4 +58,4 @@ jobs:
       - name: Start
         env:
           DISCORD_WEBHOOK: "${{ secrets.DISCORD_WEBHOOK }}"
-        run: docker run -d -e DISCORD_WEBHOOK=$DISCORD_WEBHOOK --name=pj_downalerts pjgame841/downalerts
+        run: docker run -d -e DISCORD_WEBHOOK=$DISCORD_WEBHOOK --name=pj_downalerts-api pjgame841/downalerts-api
