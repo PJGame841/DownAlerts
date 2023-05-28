@@ -14,5 +14,7 @@ RUN adduser --system --uid 1001 downalerts-web
 
 USER downalerts-web
 
+ENV REACT_APP_API_URL http://host.docker.internal:5000
+
 EXPOSE 3000
 CMD ["npm", "start"]
